@@ -1,9 +1,11 @@
 package com.mansourdame.student.controller;
 
-import com.mansourdame.student.Student;
-import com.mansourdame.student.repository.StudentRepository;
+import com.mansourdame.student.Exception.StudentNotFoundException;
+import com.mansourdame.student.entity.Student;
 import com.mansourdame.student.service.StudentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,19 +17,22 @@ public class StudentController {
 
     private final StudentService studentService;
 
-    private final StudentRepository studentRepository;
-
-
-
     @GetMapping()
     public List<Student> getAllStudents(){
         return studentService.getAllStudents() ;
     }
 
     @GetMapping("/{id}")
-    public Student getStudentById(@PathVariable Long id){
-        return   studentService.getStudentById(id);
+    public ResponseEntity<Student> getStudentById(@PathVariable Long id){
+        return   ResponseEntity.ok(studentService.getStudentById(id));
     }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<Student> getStudentByEmail(@PathVariable String email){
+        return   ResponseEntity.ok(studentService.getStudentByEmail(email));
+    }
+
+
 
     @PostMapping()
     public Student addStudent(@RequestBody Student student){

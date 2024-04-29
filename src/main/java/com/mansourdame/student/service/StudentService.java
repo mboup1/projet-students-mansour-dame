@@ -1,6 +1,8 @@
 package com.mansourdame.student.service;
 
-import com.mansourdame.student.Student;
+import com.mansourdame.student.Exception.EmailNotFoundException;
+import com.mansourdame.student.Exception.StudentNotFoundException;
+import com.mansourdame.student.entity.Student;
 import com.mansourdame.student.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,20 @@ public class StudentService {
     }
 
     public Student getStudentById(Long id){
-        return   studentRepository.findById(id).get();
+
+        Optional<Student> existingStudent = studentRepository.findById(id);
+        if (!existingStudent.isPresent()) {
+            throw new StudentNotFoundException("No student found with this ID : " + id);
+        }
+        return existingStudent.get();
+    }
+
+    public Student getStudentByEmail(String email) {
+        Optional<Student> existingStudentByEmail = studentRepository.findStudentByEmail(email);
+        if (!existingStudentByEmail.isPresent()) {
+            throw new EmailNotFoundException("No student found with this : " + email);
+        }
+        return existingStudentByEmail.get();
     }
 
     public Student addStudent(Student student){
@@ -53,4 +68,5 @@ public class StudentService {
 //               .email(student.getEmail())
 //               .build();
     }
+
 }
