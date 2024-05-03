@@ -1,10 +1,11 @@
 package com.mansourdame.student.service;
 
-import com.mansourdame.student.Exception.EmailNotFoundException;
-import com.mansourdame.student.Exception.StudentNotFoundException;
 import com.mansourdame.student.entity.Student;
+import com.mansourdame.student.Exception.StudentException;
 import com.mansourdame.student.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,15 +17,15 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
 
-    public List<Student> getAllStudents(){
-        return   studentRepository.findAll();
+    public List<Student> getAllStudents() {
+        return studentRepository.findAll();
     }
 
-    public Student getStudentById(Long id){
+    public Student getStudentById(Long id) {
 
         Optional<Student> existingStudent = studentRepository.findById(id);
         if (!existingStudent.isPresent()) {
-            throw new StudentNotFoundException("No student found with this ID : " + id);
+            throw new StudentException.StudentNotFoundException("No student found with this ID : " + id);
         }
         return existingStudent.get();
     }
@@ -32,41 +33,60 @@ public class StudentService {
     public Student getStudentByEmail(String email) {
         Optional<Student> existingStudentByEmail = studentRepository.findStudentByEmail(email);
         if (!existingStudentByEmail.isPresent()) {
-            throw new EmailNotFoundException("No student found with this : " + email);
+            throw new StudentException.EmailNotFoundException("No student found with this : " + email);
         }
+
         return existingStudentByEmail.get();
     }
 
-    public Student addStudent(Student student){
-        return   studentRepository.save(student);
+    public ResponseEntity<?> addStudent(Student newStudent) {
+
+        if (newStudent.getFirstName() == null || newStudent.getFirstName().isBlank() ||
+                newStudent.getLastName() == null || newStudent.getLastName().isBlank() ||
+                newStudent.getEmail() == null || newStudent.getEmail().isBlank()) {
+            throw new StudentException.StudentFieldsMissingException("All fields must be completed");
+        }
+
+        if (!newStudent.getEmail().contains("@")) {
+            throw new StudentException.InvalidEmailFormatException("Invalid email format");
+        }
+
+        Student savedStudent = studentRepository.save(newStudent);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedStudent);
     }
 
-    public void deleteStudentById(Long id) {
-        studentRepository.deleteById(id);
-    }
+    public ResponseEntity<?> updatedStudent(Student updateStudent, Long id) {
 
-    public Student updateStudent(Student student, Long id) {
+        if (updateStudent.getFirstName() == null || updateStudent.getFirstName().isBlank() ||
+                updateStudent.getLastName() == null || updateStudent.getLastName().isBlank() ||
+                updateStudent.getEmail() == null || updateStudent.getEmail().isBlank()) {
+            throw new StudentException.StudentFieldsMissingException("All fields must be completed");
+        }
 
         Optional<Student> existingStudent = studentRepository.findById(id);
 
         if (!existingStudent.isPresent()) {
-            throw new RuntimeException();
+            throw new StudentException.StudentNotFoundException("No student found with this ID : " + id);
 
         }
 
         Student newStudent = new Student();
-        newStudent.setId(student.getId());
-        newStudent.setFirstName(student.getFirstName());
-        newStudent.setLastName(student.getLastName());
-        newStudent.setEmail(student.getEmail());
-        return studentRepository.save(newStudent);
+        newStudent.setId(updateStudent.getId());
+        newStudent.setFirstName(updateStudent.getFirstName());
+        newStudent.setLastName(updateStudent.getLastName());
+        newStudent.setEmail(updateStudent.getEmail());
 
-//       return Student.builder()
-//               .id(student.getId())
-//               .firstName(student.getFirstName())
-//               .lastName(student.getLastName())
-//               .email(student.getEmail())
-//               .build();
+        Student updatedStudent = studentRepository.save(newStudent);
+        return ResponseEntity.status(HttpStatus.CREATED).body(updatedStudent);
+    }
+
+    public void deleteStudentById(Long id) {
+        Optional<Student> existingStudent = studentRepository.findById(id);
+        if (!existingStudent.isPresent()) {
+            throw new StudentException.StudentNotFoundException("No student found with this ID : " + id);
+        }
+
+        studentRepository.deleteById(id);
     }
 
 }

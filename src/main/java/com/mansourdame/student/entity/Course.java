@@ -1,28 +1,28 @@
 package com.mansourdame.student.entity;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Entity
 @Builder
-public class Student {
+public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String firstName;
-    private String lastName;
-    private String email;
+    private String name;
+    private Long idStudent;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
-    private List<Course> courses;
-
+    @ManyToOne
+    @JoinColumn(name = "student_id")
+    @JsonIgnore
+    private Student student;
 }
