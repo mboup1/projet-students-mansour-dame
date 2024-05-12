@@ -1,6 +1,7 @@
 package com.mansourdame.student.service;
 
 import com.mansourdame.student.Exception.StudentException;
+import com.mansourdame.student.Exception.StudentNotFoundException;
 import com.mansourdame.student.entity.Course;
 import com.mansourdame.student.entity.Student;
 import com.mansourdame.student.exception.CourseException;
@@ -49,7 +50,7 @@ public class CourseService {
         Optional<Student> existingStudent = studentRepository.findById(newCourse.getIdStudent());
 
         if (!existingStudent.isPresent()) {
-            throw new StudentException.StudentNotFoundException("No student found with this ID : " + newCourse.getIdStudent());
+            throw new StudentNotFoundException("No student found with this ID : " + newCourse.getIdStudent());
 
         }
 

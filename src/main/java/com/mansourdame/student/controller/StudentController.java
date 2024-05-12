@@ -1,7 +1,9 @@
 package com.mansourdame.student.controller;
 
+import com.mansourdame.student.dto.StudentDTO;
 import com.mansourdame.student.entity.Student;
 import com.mansourdame.student.service.StudentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,9 +34,9 @@ public class StudentController {
 
 
     @PostMapping()
-    public ResponseEntity<?> addStudent(@RequestBody Student newStudent) {
+    public ResponseEntity<Student> addStudent(@Valid @RequestBody StudentDTO  newStudentDto) {
 
-        return studentService.addStudent(newStudent);
+        return ResponseEntity.ok(studentService.addStudent(newStudentDto));
     }
 
     @DeleteMapping("/{id}")
@@ -45,8 +47,8 @@ public class StudentController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateStudent(@RequestBody Student student, @PathVariable Long id) {
-        return studentService.updatedStudent(student, id);
+    public ResponseEntity<Student> updateStudent(@RequestBody Student student, @PathVariable Long id) {
+        return ResponseEntity.ok(studentService.updatedStudent(student, id));
     }
 
 }

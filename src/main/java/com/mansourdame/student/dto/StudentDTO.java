@@ -1,6 +1,6 @@
-package com.mansourdame.student.entity;
+package com.mansourdame.student.dto;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -8,27 +8,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Entity
 @Builder
-public class Student {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+public class StudentDTO {
 
-    @NotBlank
+    @NotBlank(message = "firstName required")
     private String firstName;
 
-    @NotBlank
+    @NotBlank(message = "lastName required")
     private String lastName;
 
     @Email(message = "Invalid email format")
     private String email;
-
-//    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
-//    private List<Course> courses;
 }

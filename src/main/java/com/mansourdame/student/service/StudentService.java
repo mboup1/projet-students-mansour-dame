@@ -1,7 +1,10 @@
 package com.mansourdame.student.service;
 
+import com.mansourdame.student.Exception.EmailNotFoundException;
+import com.mansourdame.student.Exception.StudentNotFoundException;
+import com.mansourdame.student.dto.StudentDTO;
+import com.mansourdame.student.dto.StudentMapper;
 import com.mansourdame.student.entity.Student;
-import com.mansourdame.student.Exception.StudentException;
 import com.mansourdame.student.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,15 +12,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class StudentService {
 
+
     private final StudentRepository studentRepository;
 
     public List<Student> getAllStudents() {
+
         return studentRepository.findAll();
     }
 
@@ -25,7 +31,7 @@ public class StudentService {
 
         Optional<Student> existingStudent = studentRepository.findById(id);
         if (!existingStudent.isPresent()) {
-            throw new StudentException.StudentNotFoundException("No student found with this ID : " + id);
+            throw new StudentNotFoundException("No student found with this ID : " + id);
         }
         return existingStudent.get();
     }
@@ -33,57 +39,40 @@ public class StudentService {
     public Student getStudentByEmail(String email) {
         Optional<Student> existingStudentByEmail = studentRepository.findStudentByEmail(email);
         if (!existingStudentByEmail.isPresent()) {
-            throw new StudentException.EmailNotFoundException("No student found with this : " + email);
+            throw new EmailNotFoundException("No student found with this : " + email);
         }
 
         return existingStudentByEmail.get();
     }
 
-    public ResponseEntity<?> addStudent(Student newStudent) {
+    public Student addStudent(StudentDTO studentDTO) {
 
-        if (newStudent.getFirstName() == null || newStudent.getFirstName().isBlank() ||
-                newStudent.getLastName() == null || newStudent.getLastName().isBlank() ||
-                newStudent.getEmail() == null || newStudent.getEmail().isBlank()) {
-            throw new StudentException.StudentFieldsMissingException("All fields must be completed");
+        if (Objects.isNull(studentDTO)) {
+            throw new StudentEntityNotNullException("Student data is null");
         }
 
-        if (!newStudent.getEmail().contains("@")) {
-            throw new StudentException.InvalidEmailFormatException("Invalid email format");
-        }
+        Student savedStudent = StudentMapper.convertDtoToEntity(studentDTO);
 
-        Student savedStudent = studentRepository.save(newStudent);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedStudent);
+        studentRepository.save(savedStudent);
+
+        return savedStudent;
     }
 
-    public ResponseEntity<?> updatedStudent(Student updateStudent, Long id) {
+    public Student updatedStudent(Student updateStudent, Long id) {
 
-        if (updateStudent.getFirstName() == null || updateStudent.getFirstName().isBlank() ||
-                updateStudent.getLastName() == null || updateStudent.getLastName().isBlank() ||
-                updateStudent.getEmail() == null || updateStudent.getEmail().isBlank()) {
-            throw new StudentException.StudentFieldsMissingException("All fields must be completed");
-        }
+        Student existingStudent = studentRepository.findById(id).orElseThrow(()-> new StudentNotFoundException("No student found with this ID : " + id));
 
-        Optional<Student> existingStudent = studentRepository.findById(id);
+        existingStudent.setFirstName(updateStudent.getFirstName());
+        existingStudent.setLastName(updateStudent.getLastName());
+        existingStudent.setEmail(updateStudent.getEmail());
 
-        if (!existingStudent.isPresent()) {
-            throw new StudentException.StudentNotFoundException("No student found with this ID : " + id);
-
-        }
-
-        Student newStudent = new Student();
-        newStudent.setId(updateStudent.getId());
-        newStudent.setFirstName(updateStudent.getFirstName());
-        newStudent.setLastName(updateStudent.getLastName());
-        newStudent.setEmail(updateStudent.getEmail());
-
-        Student updatedStudent = studentRepository.save(newStudent);
-        return ResponseEntity.status(HttpStatus.CREATED).body(updatedStudent);
+        return studentRepository.save(existingStudent);
     }
 
     public void deleteStudentById(Long id) {
         Optional<Student> existingStudent = studentRepository.findById(id);
         if (!existingStudent.isPresent()) {
-            throw new StudentException.StudentNotFoundException("No student found with this ID : " + id);
+            throw new StudentNotFoundException("No student found with this ID : " + id);
         }
 
         studentRepository.deleteById(id);
