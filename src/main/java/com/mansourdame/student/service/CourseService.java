@@ -1,10 +1,9 @@
 package com.mansourdame.student.service;
 
-import com.mansourdame.student.Exception.StudentException;
 import com.mansourdame.student.Exception.StudentNotFoundException;
 import com.mansourdame.student.entity.Course;
 import com.mansourdame.student.entity.Student;
-import com.mansourdame.student.exception.CourseException;
+import com.mansourdame.student.Exception.CourseException;
 import com.mansourdame.student.repository.CourseRepository;
 import com.mansourdame.student.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.mansourdame.student.exception;
+package com.mansourdame.student.Exception;
 
 public class CourseException extends RuntimeException {
     public CourseException(String message) {

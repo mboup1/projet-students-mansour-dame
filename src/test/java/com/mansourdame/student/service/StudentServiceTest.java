@@ -1,17 +1,18 @@
+//package com.mansourdame.student.service;
 package com.mansourdame.student.service;
 
+import com.mansourdame.student.Exception.EmailNotFoundException;
+import com.mansourdame.student.Exception.StudentEntityNotNullException;
 import com.mansourdame.student.Exception.StudentNotFoundException;
 import com.mansourdame.student.dto.StudentDTO;
 import com.mansourdame.student.dto.StudentMapper;
 import com.mansourdame.student.entity.Student;
 import com.mansourdame.student.repository.StudentRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
@@ -34,14 +35,8 @@ class StudentServiceTest {
     @Mock
     StudentMapper studentMapper;
 
-    @BeforeEach
-    void setUp() {
-//        System.out.println("Bonjour !");
-    }
-
     @Test
     public void testGetAllStudents(){
-        System.out.println("je suis dans le test");
 
         Student student1 = new Student(1L,"bezos", "jeff","jeff@jeff.com");
         Student student2 = new Student(2L,"jobs", "steve","steve@steve.com");
@@ -62,11 +57,39 @@ class StudentServiceTest {
 
         Mockito.when(studentRepository.findById(1L)).thenReturn(Optional.of(student1));
 
-        Student studentGet= studentService.getStudentById(studentId);
+        Student foundStudent= studentService.getStudentById(studentId);
 
-        assertEquals(student1.getId(),studentGet.getId());
-        assertEquals(student1.getLastName(),studentGet.getLastName());
-        assertEquals(student1.getFirstName(),studentGet.getFirstName());
+        assertEquals(student1.getId(),foundStudent.getId());
+        assertEquals(student1.getLastName(),foundStudent.getLastName());
+        assertEquals(student1.getFirstName(),foundStudent.getFirstName());
+    }
+
+    @Test
+    public void testGetStudentWithNullDTO() {
+
+        assertThrows(StudentNotFoundException.class, () -> {
+            studentService.getStudentById(null);
+        });
+    }
+
+    @Test
+    public void testGetStudentByEmail(){
+
+        Student student1 = new Student(1L,"bezos", "jeff","jeff@jeff.com");
+
+        Mockito.when(studentRepository.findStudentByEmail("jeff@jeff.com")).thenReturn(Optional.of(student1));
+
+        Student foundStudent= studentService.getStudentByEmail("jeff@jeff.com");
+
+        assertEquals(student1.getEmail(),foundStudent.getEmail());
+    }
+
+    @Test
+    public void testGetStudentByEmailWithNullDTO() {
+
+        assertThrows(EmailNotFoundException.class, () -> {
+            studentService.getStudentByEmail(null);
+        });
     }
 
 
@@ -81,10 +104,10 @@ class StudentServiceTest {
 
         Mockito.when(studentRepository.save(student)).thenReturn(student);
 
-        Student studentGet= studentService.addStudent(studentDTO);
+        Student foundStudent= studentService.addStudent(studentDTO);
 
-        assertEquals(studentDTO.getLastName(),studentGet.getLastName());
-        assertEquals(studentDTO.getFirstName(),studentGet.getFirstName());
+        assertEquals(studentDTO.getLastName(),foundStudent.getLastName());
+        assertEquals(studentDTO.getFirstName(),foundStudent.getFirstName());
     }
 
     @Test
@@ -93,14 +116,6 @@ class StudentServiceTest {
 
         assertThrows(StudentEntityNotNullException.class, () -> {
             studentService.addStudent(studentDTO);
-        });
-    }
-
-    @Test
-    public void testGetStudentWithNullDTO() {
-
-        assertThrows(StudentNotFoundException.class, () -> {
-            studentService.getStudentById(null);
         });
     }
 
@@ -137,8 +152,6 @@ class StudentServiceTest {
         Student studentUpdated =studentService.updatedStudent(student,id);
 
         assertEquals(student.getFirstName(), studentUpdated.getFirstName() );
-
-
     }
 
 }

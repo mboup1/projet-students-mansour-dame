@@ -3,6 +3,7 @@ package com.mansourdame.student.controller;
 import com.mansourdame.student.dto.StudentDTO;
 import com.mansourdame.student.entity.Student;
 import com.mansourdame.student.service.StudentService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,8 @@ public class StudentController {
 
     private final StudentService studentService;
 
+
+    @Operation(summary = "je suis là")
     @GetMapping()
     public List<Student> getAllStudents() {
         return studentService.getAllStudents();

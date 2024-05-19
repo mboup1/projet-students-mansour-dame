@@ -1,14 +1,13 @@
 package com.mansourdame.student.service;
 
 import com.mansourdame.student.Exception.EmailNotFoundException;
+import com.mansourdame.student.Exception.StudentEntityNotNullException;
 import com.mansourdame.student.Exception.StudentNotFoundException;
 import com.mansourdame.student.dto.StudentDTO;
 import com.mansourdame.student.dto.StudentMapper;
 import com.mansourdame.student.entity.Student;
 import com.mansourdame.student.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

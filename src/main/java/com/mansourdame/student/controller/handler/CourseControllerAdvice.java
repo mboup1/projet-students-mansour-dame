@@ -1,6 +1,6 @@
 package com.mansourdame.student.controller.handler;
 
-import com.mansourdame.student.exception.CourseException;
+import com.mansourdame.student.Exception.CourseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
