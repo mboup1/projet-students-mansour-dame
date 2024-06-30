@@ -23,7 +23,7 @@ public class CourseApiService {
 
 
     public StudentCourseDTO getCoursesToStudent(Long id) {
-        List<CourseDTO> coursesDTO = restClient.get().uri("api/v1/coursesDTO").retrieve().body(new ParameterizedTypeReference<List<CourseDTO>>() {
+        List<CourseDTO> coursesDTO = restClient.get().uri("api/v1/courses").retrieve().body(new ParameterizedTypeReference<List<CourseDTO>>() {
         });
 
         Student student = studentService.getStudentById(id);

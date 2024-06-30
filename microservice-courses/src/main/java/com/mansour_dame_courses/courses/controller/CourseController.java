@@ -30,10 +30,10 @@ public class CourseController {
         return courseService.addCourse(newCourse);
     }
 
-    @PostMapping("/{add-course}")
-    public ResponseEntity<?> addCourseToStudent(@RequestBody Course newCourse) {
-        return courseService.addCourseToStudent(newCourse);
-    }
+//    @PostMapping("/{add-course}")
+//    public ResponseEntity<?> addCourseToStudent(@RequestBody Course newCourse) {
+//        return courseService.addCourseToStudent(newCourse);
+//    }
 //
 //    @DeleteMapping("/{id}")
 //    public ResponseEntity<?> deleteCourseById(@PathVariable Long id) {
