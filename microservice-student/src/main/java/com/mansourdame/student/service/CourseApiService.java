@@ -1,8 +1,8 @@
 package com.mansourdame.student.service;
 
-import com.mansourdame.student.entity.CourseDTO;
+import com.mansourdame.student.dto.CourseDTO;
 import com.mansourdame.student.entity.Student;
-import com.mansourdame.student.entity.StudentCourseDTO;
+import com.mansourdame.student.dto.StudentCourseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;

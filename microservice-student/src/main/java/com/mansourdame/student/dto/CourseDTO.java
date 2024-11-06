@@ -1,4 +1,4 @@
-package com.mansourdame.student.entity;
+package com.mansourdame.student.dto;
 
 
 import lombok.AllArgsConstructor;

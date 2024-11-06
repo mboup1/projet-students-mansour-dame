@@ -1,5 +1,6 @@
-package com.mansourdame.student.entity;
+package com.mansourdame.student.dto;
 
+import com.mansourdame.student.dto.CourseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

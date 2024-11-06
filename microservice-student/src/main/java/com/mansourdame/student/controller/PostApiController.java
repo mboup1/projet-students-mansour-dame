@@ -1,7 +1,7 @@
 package com.mansourdame.student.controller;
 
 import com.mansourdame.student.entity.Post;
-import com.mansourdame.student.entity.StudentCourseDTO;
+import com.mansourdame.student.dto.StudentCourseDTO;
 import com.mansourdame.student.service.CourseApiService;
 import com.mansourdame.student.service.PostApiService;
 import lombok.RequiredArgsConstructor;
